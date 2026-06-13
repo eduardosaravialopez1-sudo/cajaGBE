@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Precios</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f7f9fa; color: #333; padding-bottom: 50px; }
+        nav { background: #2c3e50; padding: 15px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; font-weight: bold; padding: 5px 10px; border-radius: 4px; }
+        nav a:hover, nav a.active { background: #e67e22; }
+        .container { max-width: 700px; margin: 20px auto; padding: 0 20px; }
+        h1, h2 { margin-bottom: 15px; color: #2c3e50; }
+        .precios-box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .grid-precios { display: grid; grid-template-columns: 1fr 100px 100px 100px; gap: 10px; align-items: center; margin-bottom: 15px; }
+        .grid-header { font-weight: bold; color: #34495e; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .item-label { font-weight: bold; color: #2c3e50; }
+        input[type="number"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; text-align: center; font-size: 14px; }
+        button { background: #2ecc71; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.2s; }
+        button:hover { background: #27ae60; }
+        .btn-restablecer { background: #7f8c8d; margin-top: 10px; }
+        .btn-restablecer:hover { background: #95a5a6; }
+        .nota { font-size: 12px; color: #7f8c8d; margin-top: 5px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Ventas</a>
+        <a href="pedidos.html">Registro Pedidos</a>
+        <a href="materia_prima.html">Materia Prima</a>
+        <a href="conteo.html">Conteo e Historial</a>
+        <a href="cierre.html">Cierre de Caja</a>
+        <a href="precios.html" class="active">Configurar Precios</a>
+    </nav>
+
+    <div class="container">
+        <h1>Ajuste de Precios de Venta</h1>
+        
+        <div class="precios-box">
+            <h2>Hamburguesas Normales</h2>
+            <p class="nota">(Street, Street Hot, Country, Bogga, City, Chesse)</p>
+            <br>
+            <div class="grid-precios grid-header">
+                <div>Modalidad</div>
+                <div>Suelta</div>
+                <div>C/Papas</div>
+                <div>Combo</div>
+            </div>
+            <div class="grid-precios">
+                <div class="item-label">Efectivo / QR</div>
+                <input type="number" id="norm-suelta" step="1">
+                <input type="number" id="norm-papas" step="1">
+                <input type="number" id="norm-combo" step="1">
+            </div>
+            <div class="grid-precios">
+                <div class="item-label" style="color: #e74c3c;">Pedidos Ya</div>
+                <input type="number" id="pya-suelta" step="1">
+                <input type="number" id="pya-papas" step="1">
+                <input type="number" id="pya-combo" step="1">
+            </div>
+        </div>
+
+        <div class="precios-box">
+            <h2>Bite Burger y Extras</h2>
+            <br>
+            <div class="grid-precios grid-header">
+                <div>Producto</div>
+                <div>Suelta</div>
+                <div>C/Papas</div>
+                <div>Combo</div>
+            </div>
+            <div class="grid-precios">
+                <div class="item-label">Bite Burger</div>
+                <input type="number" id="bite-suelta" step="1">
+                <input type="number" id="bite-papas" step="1">
+                <input type="number" id="bite-combo" step="1">
+            </div>
+            <div class="grid-precios" style="grid-template-columns: 1fr 100px;">
+                <div class="item-label">Papa Extra (Porción)</div>
+                <input type="number" id="papa-extra" step="1">
+            </div>
+        </div>
+
+        <button onclick="guardarPrecios()">Guardar Nuevos Precios</button>
+        <button class="btn-restablecer" onclick="restablecerDefecto()">Restablecer Precios de Fábrica</button>
+    </div>
+
+    <script>
+        // Precios por defecto iniciales del negocio
+        const preciosDefecto = {
+            normal: { suelta: 40, papas: 50, combo: 60 },
+            pedidosYa: { suelta: 39, papas: 49, combo: 58 },
+            bite: { suelta: 26, papas: 36, combo: 44 },
+            papaExtra: 12
+        };
+
+        function cargarPrecios() {
+            let precios = JSON.parse(localStorage.getItem('config_precios')) || preciosDefecto;
+
+            // Cargar en los inputs
+            document.getElementById('norm-suelta').value = precios.normal.suelta;
+            document.getElementById('norm-papas').value = precios.normal.papas;
+            document.getElementById('norm-combo').value = precios.normal.combo;
+
+            document.getElementById('pya-suelta').value = precios.pedidosYa.suelta;
+            document.getElementById('pya-papas').value = precios.pedidosYa.papas;
+            document.getElementById('pya-combo').value = precios.pedidosYa.combo;
+
+            document.getElementById('bite-suelta').value = precios.bite.suelta;
+            document.getElementById('bite-papas').value = precios.bite.papas;
+            document.getElementById('bite-combo').value = precios.bite.combo;
+
+            document.getElementById('papa-extra').value = precios.papaExtra;
+        }
+
+        function guardarPrecios() {
+            let precios = {
+                normal: {
+                    suelta: parseFloat(document.getElementById('norm-suelta').value) || 0,
+                    papas: parseFloat(document.getElementById('norm-papas').value) || 0,
+                    combo: parseFloat(document.getElementById('norm-combo').value) || 0
+                },
+                pedidosYa: {
+                    suelta: parseFloat(document.getElementById('pya-suelta').value) || 0,
+                    papas: parseFloat(document.getElementById('pya-papas').value) || 0,
+                    combo: parseFloat(document.getElementById('pya-combo').value) || 0
+                },
+                bite: {
+                    suelta: parseFloat(document.getElementById('bite-suelta').value) || 0,
+                    papas: parseFloat(document.getElementById('bite-papas').value) || 0,
+                    combo: parseFloat(document.getElementById('bite-combo').value) || 0
+                },
+                papaExtra: parseFloat(document.getElementById('papa-extra').value) || 0
+            };
+
+            localStorage.setItem('config_precios', JSON.stringify(precios));
+            alert("¡Precios actualizados con éxito! Se aplicarán a las nuevas ventas inmediatamente.");
+        }
+
+        function restablecerDefecto() {
+            if(confirm("¿Quieres volver a los precios originales del menú (40, 50, 60, etc.)?")) {
+                localStorage.setItem('config_precios', JSON.stringify(preciosDefecto));
+                cargarPrecios();
+            }
+        }
+
+        window.onload = cargarPrecios;
+    </script>
+</body>
+</html>
